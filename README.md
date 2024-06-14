@@ -1,3 +1,7 @@
+![GitHub License](https://img.shields.io/github/license/leoyang183/localstack_demo)
+![GitHub Repo stars](https://img.shields.io/github/stars/leoyang183/localstack_demo)
+![GitHub forks](https://img.shields.io/github/forks/leoyang183/localstack_demo)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/leoyang183/localstack_demo)
 # LocalStack Demo
 
 這個專案是在展示如何在 local 開發的時候怎麼使用 `localstack` 去開發 `API GATEWAY` + `LAMBDA` 作為 API endpoint
