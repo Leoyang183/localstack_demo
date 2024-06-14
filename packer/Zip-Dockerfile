@@ -1,0 +1,23 @@
+FROM node:20.14-slim
+
+# 安裝 zip 工具
+RUN apt-get update && apt-get install -y zip
+
+# 設置工作目錄
+WORKDIR /usr/src/app
+
+# 複製 package.json 和 package-lock.json 到工作目錄
+COPY package*.json ./
+
+# 安裝依賴
+RUN npm install
+RUN npm prune --production
+
+# 複製原始碼到工作目錄
+COPY . .
+
+# 打包 Lambda 函數及其依賴
+RUN zip -r /usr/src/app/my-function.zip index.js node_modules package.json
+
+# 指定輸出文件的名稱和路徑
+CMD ["cp", "/usr/src/app/my-function.zip", "/output/my-function.zip"]

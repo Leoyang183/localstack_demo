@@ -1,0 +1,42 @@
+services:
+  packer:
+    build:
+      context: ./packer
+      dockerfile: Zip-Dockerfile
+      platforms:
+        - "linux/arm64"
+      args:
+        - NO_CACHE=true
+    volumes:
+      - ./output:/output
+    command: ["/bin/sh", "-c", "cp /usr/src/app/my-function.zip /output/my-function.zip"]
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Worker-Dockerfile
+      platforms:
+        - "linux/arm64"
+    links:
+      - localstack_demo:localstack_demo
+    depends_on:
+      - localstack_demo
+  localstack_demo:
+    container_name: localstack_demo
+    image: localstack/localstack
+    ports:
+      - 4566:4566
+    environment:
+      - SERVICES=sqs,lambda,apigateway,iam
+      - DEFAULT_REGION=ap-northeast-1
+      - DEBUG=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - './localstack/init-scripts/init.sh:/etc/localstack/init/ready.d/init.sh'
+      - ./output/my-function.zip:/tmp/my-function.zip
+    depends_on:
+      - packer
+    command: ["/bin/bash", "-c", "chmod +x /etc/localstack/init/ready.d/init.sh"]
+volumes:
+  data: {}
+  test-data: {}
